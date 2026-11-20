@@ -37,35 +37,38 @@ Claude Code はこの表の上から、未完了(`[ ]`)で依存が満たされ�
 
 ## M1: データ・特徴量・ベースライン
 
-- [ ] データ取得スクリプト + 検査(JSON 不正・欠損・重複・train/val 分離)+ manifest
-- [ ] 固定クラス設計(`configs/labels_v1.json`)と対象外の別集計
-- [ ] テキスト正規化(GateAct-norm-v1)と FNV-1a ハッシュ n-gram ビット特徴量(Python)
-- [ ] 特徴量の C99 実装と Python/C ビット一致テスト
-- [ ] 評価指標(Exact/Macro-F1/P/R/False Action/no-action P/R/否定/カバー率)
-- [ ] ベースライン A: ルールベース
-- [ ] ベースライン B: n-gram 分類器(JapaneseTinyAgentLM `NgramClassifier` 相当)
-- [ ] ベースライン評価結果を `results/baselines/` に保存
+- [x] データ取得スクリプト + 検査(JSON 不正・欠損・重複・train/val 分離)+ manifest
+  (2026-11-20、`make data`、`results/data/manifest.json`。重複 0・矛盾 0・重なり 0)
+- [x] 固定クラス設計(`configs/labels_v1.json`、16 クラス)と対象外の別集計(カバー率 train 61.8% / val 62.2%)
+- [x] テキスト正規化(GateAct-norm-v1)と FNV-1a ハッシュ n-gram ビット特徴量(Python)
+- [x] 特徴量の C99 実装と Python/C ビット一致テスト(validation 全 4,546 文で一致、ASan/UBSan 確認)
+- [x] 評価指標(Exact/Macro-F1/P/R/False Action/no-action P/R/否定/カバー率/json_exact/bootstrap CI)
+- [x] ベースライン A: ルールベース(test exact 83.44%)
+- [x] ベースライン B: n-gram 分類器(JapaneseTinyAgentLM `NgramClassifier` 相当、3 seed 98.76 ± 0.07%)
+- [x] 追加比較: 同じ特徴ビットの線形分類器 bit-linear(w512: 93.54 ± 0.02%、w1024 95.97%、w2048 96.85%)
+- [x] ベースライン評価結果を `results/baselines/` に保存
 
 ## M2: Griffith モデル
 
-- [ ] LUT2 モデル構築・学習ループ・checkpoint・soft/hard 評価
-- [ ] 1 seed で学習 → PC 精度測定
-- [ ] 入力幅 / ゲート数 / LUT2 vs LUT4 の小規模比較
+- [x] LUT2 モデル構築・学習ループ・checkpoint・soft/hard 評価(dev の hard 精度で epoch 選択)
+- [x] 1 seed で学習 → PC 精度測定(LUT2 2×4k: 71.37% — 不十分。LUT4 warp: 86.84%)
+- [~] 入力幅 / ゲート数 / LUT2 vs LUT4 vs LUT6 の小規模比較(`scripts/sweep_m2a.sh` 実行中)
 - [ ] 3 seed 以上で比較
 
 ## M3: C コード生成
 
-- [ ] IR export・回路圧縮・バンドル・C99 生成
-- [ ] PyTorch hard / IR / C の完全一致テスト(圧縮前後含む)
-- [ ] サイズ測定(ゲート数・IR・C・.rodata)
+- [x] IR export・回路圧縮・バンドル・C99 生成(`gateact export`、dense / dense-flat)
+- [x] PyTorch hard / IR / C の完全一致テスト(圧縮前後含む。`tests/integration/test_export_verify.py`)
+- [ ] サイズ測定(ゲート数・IR・C・.rodata) — 採用モデル確定後
 
 ## M4: ESP32-S3 実機評価
 
-- [ ] ファームウェア(シリアル UTF-8 入力 → 特徴量 → 推論 → JSON 出力 + 時間)
-- [ ] ベンチマークモード(同梱サンプル、1,000 回以上、P50/P95/P99)
-- [ ] ホストビルドで実機と同じ出力を確認
-- [ ] 実機: 書き込み・一致率・Flash/RAM/heap・レイテンシ(要ボード接続)
-- [ ] n-gram 分類器の ESP32-S3 実装(同一ボードでの速度比較)
+- [x] ファームウェア(シリアル UTF-8 入力 → 特徴量 → 推論 → JSON 出力 + 時間)
+- [x] ベンチマークモード(同梱サンプル、既定 2,000 回、P50/P95/P99)
+- [x] ホストビルドで Python と同じ出力を確認(LUT / bit-linear / n-gram)
+- [ ] BLOCKED(ボード未接続): 実機での書き込み・一致率・Flash/RAM/heap・レイテンシ
+  (`docs/hardware.md`、`scripts/esp32_bench.py` は準備済み)
+- [x] n-gram / bit-linear の int8 C 実装とファームウェア切り替え(GA_MODEL_KIND 2/3)
 
 ## M5: 研究評価・公開準備
 
