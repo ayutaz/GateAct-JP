@@ -28,6 +28,7 @@ def register(sub: argparse._SubParsersAction) -> None:  # type: ignore[type-arg]
     p.add_argument("--dev-frac", type=float, default=0.05)
     p.add_argument("--n-boot", type=int, default=1000)
     p.add_argument("--out", type=Path, default=Path("results/baselines"))
+    p.add_argument("--runs", type=Path, default=Path("runs/baselines"), help="重みの保存先")
     p.add_argument("--verbose", action="store_true")
     p.set_defaults(handler=run)
 
@@ -68,6 +69,15 @@ def run(args: argparse.Namespace) -> int:
         **ev,
     }
     stem = args.kind + (f"_w{args.width}" if args.kind == "bitlinear" else "")
+    net = getattr(clf, "net", None)
+    if net is not None:
+        import torch
+
+        ckpt = args.runs / f"{stem}_s{args.seed}.pt"
+        ckpt.parent.mkdir(parents=True, exist_ok=True)
+        torch.save({"kind": args.kind, "model": clf.describe(), "state_dict": net.state_dict(),
+                    "labels": list(spec.names)}, ckpt)  # fmt: skip
+        result["checkpoint"] = str(ckpt)
     path = write_result(args.out / f"{stem}_s{args.seed}.json", result)
     t = ev["test"]
     print(

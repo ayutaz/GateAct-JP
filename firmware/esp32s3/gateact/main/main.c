@@ -21,16 +21,30 @@
 
 #include "gateact_features.h"
 #include "gateact_model_config.h"
-#include "model.h"
 #include "text_samples.h"
+
+/* GA_MODEL_KIND: 1 = Griffith LUT 回路、2 = int8 bit-linear、3 = int8 n-gram(gateact_model_config.h) */
+#if GA_MODEL_KIND == 1
+#include "model.h"
+#define NUM_OUT MDL_OUTPUT_WIDTH
+#define MODEL_STATIC_BYTES MDL_CTX_BYTES
+#else
+#include "baseline_model.h"
+#include "gateact_baselines.h"
+#define NUM_OUT GB_CLASSES
+#define MODEL_STATIC_BYTES 0
+#endif
 
 #ifndef BENCH_ITERS
 #define BENCH_ITERS 2000
 #endif
 #define LINE_MAX_BYTES 1024
 
-#if MDL_INPUT_WIDTH != GA_FEAT_WIDTH || MDL_OUTPUT_WIDTH != GA_NUM_LABELS
+#if GA_MODEL_KIND == 1 && (MDL_INPUT_WIDTH != GA_FEAT_WIDTH || MDL_OUTPUT_WIDTH != GA_NUM_LABELS)
 #error "model.h と gateact_model_config.h の幅が一致しない"
+#endif
+#if GA_MODEL_KIND == 2 && (GB_WIDTH != GA_FEAT_WIDTH || GB_CLASSES != GA_NUM_LABELS)
+#error "baseline_model.h と gateact_model_config.h の幅が一致しない"
 #endif
 
 /* ---- プラットフォーム ---------------------------------------------------------------- */
@@ -64,11 +78,18 @@ static double ticks_per_us(void) { return (double)g_cpu_hz / 1e6; }
 #define PLATFORM "esp32s3"
 #endif
 
+#if GA_MODEL_KIND == 1
 static uint32_t g_work[(MDL_CTX_BYTES + 3) / 4 + 1];
 static mdl_ctx g_ctx;
-static uint8_t g_bits[MDL_INPUT_WIDTH];
-static int32_t g_scores[MDL_OUTPUT_WIDTH];
+#elif GA_MODEL_KIND == 3
+static uint32_t g_ids[3 * (GFEAT_MAX_CODEPOINTS + 2)];
+static int32_t g_hsum[GB_DIM];
+#endif
+#if GA_MODEL_KIND != 3
+static uint8_t g_bits[GA_FEAT_WIDTH];
 static const gfeat_config g_feat = {GA_FEAT_WIDTH, GA_FEAT_NGRAM_MASK, GA_FEAT_NUM_HASHES};
+#endif
+static int32_t g_scores[NUM_OUT];
 
 static int argmax(const int32_t *s, int n) {
   int best = 0;
@@ -84,11 +105,23 @@ typedef struct {
 
 static int infer(const uint8_t *text, size_t len, int *pred, timing_t *t) {
   uint64_t t0 = ticks();
+#if GA_MODEL_KIND == 3
+  size_t n_ids = 0;
+  int rc = gb_ngram_ids(text, len, GB_BUCKETS, g_ids, &n_ids);
+#else
   int rc = gfeat_extract(text, len, &g_feat, g_bits);
+#endif
   uint64_t t1 = ticks();
   if (rc != GFEAT_OK) return rc;
+#if GA_MODEL_KIND == 1
   mdl_infer_ctx(&g_ctx, g_bits, g_scores);
-  *pred = argmax(g_scores, MDL_OUTPUT_WIDTH);
+#elif GA_MODEL_KIND == 2
+  gb_bitlinear(g_bits, GB_WIDTH, GB_CLASSES, GB_WEIGHT, GB_BIAS, g_scores);
+#else
+  gb_ngram_scores(g_ids, n_ids, GB_DIM, GB_CLASSES, GB_EMBEDDING, GB_WEIGHT, GB_BIAS, g_hsum,
+                  g_scores);
+#endif
+  *pred = argmax(g_scores, NUM_OUT);
   uint64_t t2 = ticks();
   t->feat = (uint32_t)(t1 - t0);
   t->model = (uint32_t)(t2 - t1);
@@ -117,12 +150,12 @@ static void print_info(void) {
          (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL),
          (unsigned)heap_caps_get_minimum_free_size(MALLOC_CAP_8BIT));
 #endif
-  printf(",\"model\":\"%s\",\"gates\":%d,\"feature_spec\":\"%s\",\"width\":%u,"
+  printf(",\"model\":\"%s\",\"kind\":%d,\"gates\":%d,\"feature_spec\":\"%s\",\"width\":%u,"
          "\"ngram_mask\":%u,\"num_hashes\":%u,\"classes\":%d,\"ctx_bytes\":%d,"
          "\"samples\":%d,\"bench_iters\":%d}\n",
-         GA_MODEL_NAME, GA_MODEL_GATES, GA_FEATURE_SPEC, (unsigned)GA_FEAT_WIDTH,
+         GA_MODEL_NAME, GA_MODEL_KIND, GA_MODEL_GATES, GA_FEATURE_SPEC, (unsigned)GA_FEAT_WIDTH,
          (unsigned)GA_FEAT_NGRAM_MASK, (unsigned)GA_FEAT_NUM_HASHES, GA_NUM_LABELS,
-         MDL_CTX_BYTES, TS_COUNT, BENCH_ITERS);
+         MODEL_STATIC_BYTES, TS_COUNT, BENCH_ITERS);
 }
 
 static int selftest(void) {
@@ -135,22 +168,24 @@ static int selftest(void) {
       ++errors;
       continue;
     }
+#if GA_MODEL_KIND != 3
     for (int b = 0; b < TS_PACKED_BYTES; ++b) {
       uint8_t packed = 0;
-      for (int k = 0; k < 8 && b * 8 + k < MDL_INPUT_WIDTH; ++k)
+      for (int k = 0; k < 8 && b * 8 + k < (int)GA_FEAT_WIDTH; ++k)
         packed |= (uint8_t)(g_bits[b * 8 + k] << k);
       if (packed != TS_BITS[i][b]) {
         ++feat_mismatch;
         break;
       }
     }
-    for (int k = 0; k < MDL_OUTPUT_WIDTH; ++k) {
+#endif
+    for (int k = 0; k < NUM_OUT; ++k) {
       if (g_scores[k] != TS_SCORES[i][k]) {
         ++score_mismatch;
         break;
       }
     }
-    for (int k = 0; k < MDL_OUTPUT_WIDTH; ++k) {
+    for (int k = 0; k < NUM_OUT; ++k) {
       uint32_t u = (uint32_t)g_scores[k];
       for (int s = 0; s < 32; s += 8) hash = (hash ^ ((u >> s) & 0xFFu)) * 0x01000193u;
     }
@@ -210,7 +245,7 @@ static void print_mem(void) {
          (unsigned)heap_caps_get_free_size(MALLOC_CAP_8BIT),
          (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL),
          (unsigned)heap_caps_get_minimum_free_size(MALLOC_CAP_8BIT),
-         (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT), (unsigned)sizeof(g_work));
+         (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT), (unsigned)MODEL_STATIC_BYTES);
 #endif
 }
 
@@ -227,7 +262,7 @@ static void handle_line(char *line) {
   double k = ticks_per_us();
   printf("RESULT {\"ok\":true,\"id\":%d,\"action\":\"%s\",\"bytes\":%u,\"scores\":[", pred,
          GA_LABELS[pred], (unsigned)len);
-  for (int i = 0; i < MDL_OUTPUT_WIDTH; ++i) printf(i ? ",%ld" : "%ld", (long)g_scores[i]);
+  for (int i = 0; i < NUM_OUT; ++i) printf(i ? ",%ld" : "%ld", (long)g_scores[i]);
   printf("],\"us\":{\"features\":%.3f,\"model\":%.3f,\"total\":%.3f}}\n", t.feat / k,
          t.model / k, t.total / k);
   fflush(stdout);
@@ -236,10 +271,12 @@ static void handle_line(char *line) {
 static char g_line[LINE_MAX_BYTES];
 
 static int setup(void) {
+#if GA_MODEL_KIND == 1
   if (mdl_ctx_init(&g_ctx, g_work, sizeof(g_work)) != 0) {
     printf("ERROR {\"msg\":\"mdl_ctx_init failed\"}\n");
     return 1;
   }
+#endif
   print_info();
   int bad = selftest();
   bench();

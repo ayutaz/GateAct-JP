@@ -1,0 +1,5 @@
+# GateAct-JP: 4MB flash。int8 n-gram 分類器(約 2.6MB)も入るようアプリ領域を広くとる(OTA なし)
+# Name,   Type, SubType, Offset,  Size
+nvs,      data, nvs,     0x9000,  0x6000,
+phy_init, data, phy,     0xf000,  0x1000,
+factory,  app,  factory, 0x10000, 0x3F0000,

@@ -32,13 +32,15 @@ def write_model_config_header(
     *,
     model_name: str,
     gates: int,
+    kind: int = 1,
 ) -> Path:
-    """``gateact_model_config.h`` を書く。"""
+    """``gateact_model_config.h`` を書く(kind: 1 = LUT、2 = bit-linear、3 = n-gram)。"""
     mask = sum(1 << (n - 1) for n in feat.ngram_orders)
     names = ", ".join(c_string(x.encode()) for x in labels)
     text = f"""/* 自動生成 — gateact.export.firmware。編集しない。 */
 #ifndef GATEACT_MODEL_CONFIG_H
 #define GATEACT_MODEL_CONFIG_H
+#define GA_MODEL_KIND {kind}
 #define GA_FEATURE_SPEC {c_string(FEATURE_SPEC_VERSION.encode())}
 #define GA_FEAT_WIDTH {feat.width}u
 #define GA_FEAT_NGRAM_MASK {mask}u
@@ -88,4 +90,49 @@ def write_text_samples_header(
     ]
     p = Path(path)
     p.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return p
+
+
+def _c_int_array(name: str, ctype: str, values: np.ndarray, per_line: int = 32) -> str:
+    flat = np.asarray(values).reshape(-1)
+    body = ",\n".join(
+        "  " + ",".join(str(int(v)) for v in flat[i : i + per_line])
+        for i in range(0, len(flat), per_line)
+    )
+    return f"static const {ctype} {name}[{len(flat)}] = {{\n{body}\n}};\n"
+
+
+def write_bitlinear_header(path: str | Path, weight: np.ndarray, bias: np.ndarray) -> Path:
+    """int8 bit-linear の重みヘッダ(``baseline_model.h``)を書く。"""
+    k, w = weight.shape
+    text = (
+        "/* 自動生成 — gateact.export.firmware。編集しない。 */\n"
+        "#ifndef GATEACT_BASELINE_MODEL_H\n#define GATEACT_BASELINE_MODEL_H\n#include <stdint.h>\n"
+        f"#define GB_CLASSES {k}\n#define GB_WIDTH {w}\n"
+        + _c_int_array("GB_WEIGHT", "int8_t", weight)
+        + _c_int_array("GB_BIAS", "int32_t", bias)
+        + "#endif\n"
+    )
+    p = Path(path)
+    p.write_text(text, encoding="utf-8")
+    return p
+
+
+def write_ngram_header(
+    path: str | Path, embedding: np.ndarray, weight: np.ndarray, bias: np.ndarray
+) -> Path:
+    """int8 n-gram 分類器の重みヘッダ(``baseline_model.h``)を書く。"""
+    b, d = embedding.shape
+    k = weight.shape[0]
+    text = (
+        "/* 自動生成 — gateact.export.firmware。編集しない。 */\n"
+        "#ifndef GATEACT_BASELINE_MODEL_H\n#define GATEACT_BASELINE_MODEL_H\n#include <stdint.h>\n"
+        f"#define GB_CLASSES {k}\n#define GB_BUCKETS {b}\n#define GB_DIM {d}\n"
+        + _c_int_array("GB_EMBEDDING", "int8_t", embedding)
+        + _c_int_array("GB_WEIGHT", "int8_t", weight)
+        + _c_int_array("GB_BIAS", "int32_t", bias)
+        + "#endif\n"
+    )
+    p = Path(path)
+    p.write_text(text, encoding="utf-8")
     return p

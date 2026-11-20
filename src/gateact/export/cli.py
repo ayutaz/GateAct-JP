@@ -23,6 +23,47 @@ def register(sub: argparse._SubParsersAction) -> None:  # type: ignore[type-arg]
     p.add_argument("--labels", type=Path, default=Path("configs/labels_v1.json"))
     p.set_defaults(handler=run)
 
+    b = sub.add_parser(
+        "export-baseline", help="ベースラインを int8 にしてファームウェア用に書き出す"
+    )
+    b.add_argument("checkpoint", type=Path)
+    b.add_argument("--out", type=Path, required=True)
+    b.add_argument("--n-samples", type=int, default=64)
+    b.add_argument("--data-dir", type=Path, default=DEFAULT_DIR)
+    b.add_argument("--labels", type=Path, default=Path("configs/labels_v1.json"))
+    b.add_argument("--report", type=Path, default=None, help="量子化後の評価結果 JSON の出力先")
+    b.set_defaults(handler=run_baseline)
+
+
+def run_baseline(args: argparse.Namespace) -> int:
+    """int8 化して書き出し、量子化後の精度も評価セットで測る。"""
+    from gateact.baselines.export import export_baseline_firmware
+    from gateact.evaluation.metrics import classification_report
+    from gateact.evaluation.runner import write_result
+
+    spec = LabelSpec.load(args.labels)
+    splits, data_sha = load_splits(args.data_dir, spec)
+    texts = [d.example.text for d in splits.test]
+    rep = export_baseline_firmware(
+        args.checkpoint, spec, texts, args.out,
+        labels=[spec.index(d.label) for d in splits.test], n_samples=args.n_samples,
+    )  # fmt: skip
+    preds = [spec.names[i] for i in rep.pop("scores").argmax(1)]
+    cls = classification_report(
+        [d.label for d in splits.test], preds, spec,
+        categories=[d.example.category for d in splits.test],
+        true_calls=[d.example.calls for d in splits.test],
+    )  # fmt: skip
+    cls.pop("confusion", None)
+    rep.update({"data_sha256": data_sha, "test_int8": cls})
+    if args.report:
+        write_result(args.report, rep)
+    print(
+        f"{rep['kind']} int8: {rep['model_bytes']}B test exact={cls['exact_accuracy']:.4f} "
+        f"macroF1={cls['macro_f1']:.4f} false_action={cls['false_action_rate']:.4f}"
+    )
+    return 0
+
 
 def run(args: argparse.Namespace) -> int:
     """評価セット(対象内 + 対象外の全文)で照合し、不一致があれば終了コード 1。"""
