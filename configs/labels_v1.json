@@ -1,0 +1,22 @@
+{
+  "version": "labels_v1",
+  "description": "固定 Action 分類の16クラス。単一の call を name と主要な列挙引数で分類し、数値・程度の引数は捨てる(argument loss として別集計)。複数 call、対象外の name・引数は out_of_scope として分類から除外する(no_action にはしない)。",
+  "classes": [
+    {"name": "no_action", "empty": true, "default_call": null},
+    {"name": "look_up", "call": "look", "args": {"direction": "up"}, "default_call": {"name": "look", "arguments": {"direction": "up", "amount": "normal"}}},
+    {"name": "look_down", "call": "look", "args": {"direction": "down"}, "default_call": {"name": "look", "arguments": {"direction": "down", "amount": "normal"}}},
+    {"name": "look_left", "call": "look", "args": {"direction": "left"}, "default_call": {"name": "look", "arguments": {"direction": "left", "amount": "normal"}}},
+    {"name": "look_right", "call": "look", "args": {"direction": "right"}, "default_call": {"name": "look", "arguments": {"direction": "right", "amount": "normal"}}},
+    {"name": "look_center", "call": "look", "args": {"direction": "center"}, "default_call": {"name": "look", "arguments": {"direction": "center", "amount": "normal"}}},
+    {"name": "nod", "call": "nod", "args": {}, "default_call": {"name": "nod", "arguments": {"count": 1}}},
+    {"name": "shake", "call": "shake", "args": {}, "default_call": {"name": "shake", "arguments": {"count": 1}}},
+    {"name": "bow", "call": "bow", "args": {}, "default_call": {"name": "bow", "arguments": {}}},
+    {"name": "expr_happy", "call": "set_expression", "args": {"expression": "happy"}, "default_call": {"name": "set_expression", "arguments": {"expression": "happy"}}},
+    {"name": "expr_surprised", "call": "set_expression", "args": {"expression": "surprised"}, "default_call": {"name": "set_expression", "arguments": {"expression": "surprised"}}},
+    {"name": "expr_sad", "call": "set_expression", "args": {"expression": "sad"}, "default_call": {"name": "set_expression", "arguments": {"expression": "sad"}}},
+    {"name": "led_on", "call": "set_led", "args_not": {"color": "off"}, "default_call": {"name": "set_led", "arguments": {"color": "white"}}},
+    {"name": "led_off", "call": "set_led", "args": {"color": "off"}, "default_call": {"name": "set_led", "arguments": {"color": "off"}}},
+    {"name": "volume_up", "call": "adjust_volume", "args": {"direction": "up"}, "default_call": {"name": "adjust_volume", "arguments": {"direction": "up", "amount": "normal"}}},
+    {"name": "volume_down", "call": "adjust_volume", "args": {"direction": "down"}, "default_call": {"name": "adjust_volume", "arguments": {"direction": "down", "amount": "normal"}}}
+  ]
+}
