@@ -63,8 +63,8 @@ def classification_report(
         tp = int(cm[i, i])
         fp = int(cm[:, i].sum() - tp)
         fn = int(cm[i, :].sum() - tp)
-        p, r, f = _prf(tp, fp, fn)
-        per_class[name] = {"precision": p, "recall": r, "f1": f, "support": tp + fn}
+        prec, rec, f = _prf(tp, fp, fn)
+        per_class[name] = {"precision": prec, "recall": rec, "f1": f, "support": tp + fn}
         if tp + fp + fn > 0:
             present.append(name)
             f1s.append(f)

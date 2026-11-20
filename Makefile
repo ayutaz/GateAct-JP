@@ -25,7 +25,7 @@ cov:
 typecheck:
 	uv run mypy
 
-check: sync lint test
+check: sync lint typecheck test
 
 build:
 	uv build
