@@ -52,7 +52,9 @@ def built(tmp_path_factory: pytest.TempPathFactory) -> tuple[Path, Path, list[st
 
 
 def _run(exe: Path, lines: list[bytes]) -> dict[str, list[dict]]:
-    out = subprocess.run([str(exe)], input=b"\n".join(lines) + b"\n", capture_output=True, check=True)
+    out = subprocess.run(
+        [str(exe)], input=b"\n".join(lines) + b"\n", capture_output=True, check=True
+    )
     tags: dict[str, list[dict]] = {}
     for ln in out.stdout.decode().splitlines():
         tag, _, body = ln.partition(" ")
