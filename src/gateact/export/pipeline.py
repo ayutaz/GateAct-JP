@@ -6,6 +6,9 @@ ESP32-S3 の出力はすべて IR simulate と整数で一致しなければな�
 
 from __future__ import annotations
 
+import shutil
+import struct
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -15,11 +18,12 @@ import torch
 import torch.nn as nn
 from griffith_logic.deploy import build_bundle
 from griffith_logic.deploy.compress import apply_compress, attach_compress_info
-from griffith_logic.deploy.verify import build_c_model, run_c_model_packed
 from griffith_logic.export import export_ir
 from griffith_logic.ir import validate
 from griffith_logic.ir.serialize import ir_from_dict, ir_to_dict
 from griffith_logic.ir.simulate import simulate
+
+_COMMON = Path(__file__).resolve().parents[3] / "firmware" / "common"
 
 
 def torch_hard_scores(model: nn.Module, bits: np.ndarray, *, tau: float) -> np.ndarray:
@@ -83,28 +87,46 @@ def bundle_output_width(bundle: dict[str, Any]) -> int:
 
 @dataclass
 class CModelRunner:
-    """生成 C をホストでビルドし、標準入出力経由で実行するランナー。"""
+    """``write_c_model`` の出力(ファームウェアと同じファイル)をホストでビルドして実行する。"""
 
     exe: Path
+    input_width: int
     n_out: int
 
     @classmethod
-    def build(cls, bundle: dict[str, Any], work_dir: str | Path) -> CModelRunner:
-        """バンドルから C を生成・コンパイルする(``cc -std=c99 -O2``)。"""
-        from gateact.export.griffith_runtime import patch_griffith_runtime
+    def build(
+        cls,
+        bundle: dict[str, Any],
+        work_dir: str | Path,
+        *,
+        cc: str | None = None,
+        dense_flat: str = "off",
+    ) -> CModelRunner:
+        """C を生成し ``cc -std=c99 -O2`` でバッチ推論ドライバとリンクする。"""
+        from gateact.export.codegen import write_c_model
 
-        patch_griffith_runtime()
-        exe = build_c_model(bundle, Path(work_dir))
-        return cls(exe=exe, n_out=bundle_output_width(bundle))
+        work = Path(work_dir)
+        write_c_model(bundle, work, dense_flat=dense_flat)
+        compiler = cc or shutil.which("cc") or shutil.which("clang") or shutil.which("gcc")
+        if compiler is None:
+            raise RuntimeError("C compiler (cc/clang/gcc) not found")
+        exe = work / "host_model_driver"
+        subprocess.run(
+            [compiler, "-std=c99", "-O2", "-DMDL_NO_DEFAULT_CTX", f"-I{work}",
+             str(_COMMON / "host_model_driver.c"), str(work / "model.c"),
+             str(work / "mdl_kernels.c"), "-o", str(exe)],
+            check=True,
+            capture_output=True,
+        )  # fmt: skip
+        width = int(bundle["ir"]["inputs"][0]["width"])
+        return cls(exe=exe, input_width=width, n_out=bundle_output_width(bundle))
 
     def run(self, bits: np.ndarray) -> np.ndarray:
         """``[N, W]`` の 0/1 入力に対する ``[N, n_out]`` の整数スコアを返す。"""
-        from griffith_logic.deploy.verify import PACKED_EXE_NAME
-
         bits = np.ascontiguousarray(bits, dtype=np.uint8)
-        packed_exe = self.exe.parent / (PACKED_EXE_NAME + self.exe.suffix)
-        if packed_exe.exists():
-            return run_c_model_packed(packed_exe, bits, self.n_out)
-        from griffith_logic.deploy.verify import run_c_model
-
-        return np.stack([run_c_model(self.exe, row.tobytes(), self.n_out) for row in bits])
+        if bits.ndim != 2 or bits.shape[1] != self.input_width:
+            raise ValueError(f"expected [N, {self.input_width}] bits")
+        payload = struct.pack("<I", bits.shape[0]) + bits.tobytes()
+        proc = subprocess.run([str(self.exe)], input=payload, capture_output=True, check=True)
+        out = np.frombuffer(proc.stdout, dtype="<i4").astype(np.int64)
+        return out.reshape(bits.shape[0], self.n_out)

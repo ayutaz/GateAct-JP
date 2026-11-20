@@ -22,6 +22,9 @@ def build_parser() -> argparse.ArgumentParser:
     from gateact.training import cli as train_cli
 
     train_cli.register(sub)
+    from gateact.export import cli as export_cli
+
+    export_cli.register(sub)
     return parser
 
 

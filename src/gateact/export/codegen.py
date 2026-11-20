@@ -26,7 +26,7 @@ _RUNTIME_COPY = {
 
 
 def write_c_model(
-    bundle: dict[str, Any], out_dir: str | Path, *, name: str = "model"
+    bundle: dict[str, Any], out_dir: str | Path, *, name: str = "model", dense_flat: str = "off"
 ) -> list[Path]:
     """バンドルを C99 に変換し、ランタイムと ``model_info.json`` と一緒に書き出す。
 
@@ -34,6 +34,8 @@ def write_c_model(
         bundle: ``export_bundle`` が返すバンドル。
         out_dir: 出力ディレクトリ(無ければ作る)。
         name: 生成するファイル名の stem(``model`` → ``model.h`` / ``model.c``)。
+        dense_flat: Griffith の dense-flat(平坦ネットリスト ``lut_flat``)を使うか
+            (``off`` / ``on`` / ``auto``)。バンドル自体は変えず、C 生成用の複製だけを変える。
 
     Returns:
         書き出したファイルのパス。
@@ -41,7 +43,14 @@ def write_c_model(
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     written: list[Path] = []
-    for filename, text in generate_c(bundle, name=name).items():
+    decision: dict[str, Any] | None = None
+    c_bundle = bundle
+    if dense_flat != "off":
+        from griffith_logic.deploy.flatten_dense import resolve_dense_flat
+
+        c_bundle, decision = resolve_dense_flat(bundle, mode=dense_flat)
+    files = generate_c(c_bundle, name=name, dense_flat_decision=decision)
+    for filename, text in files.items():
         path = out / filename
         path.write_text(text, encoding="utf-8")
         written.append(path)
@@ -56,7 +65,9 @@ def write_c_model(
         "output_width": bundle_output_width(bundle),
         "labels": bundle.get("labels"),
         "griffith_sha": GRIFFITH_SHA,
-        "sizes": bundle.get("sizes"),
+        "compress": (bundle.get("about") or {}).get("compress"),
+        "dense_flat": dense_flat,
+        "dense_flat_decision": decision,
     }
     info_path = out / "model_info.json"
     info_path.write_text(json.dumps(info, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
