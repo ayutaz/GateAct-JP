@@ -52,8 +52,8 @@ Claude Code はこの表の上から、未完了(`[ ]`)で依存が満たされ�
 
 - [x] LUT2 モデル構築・学習ループ・checkpoint・soft/hard 評価(dev の hard 精度で epoch 選択)
 - [x] 1 seed で学習 → PC 精度測定(LUT2 2×4k: 71.37% — 不十分。LUT4 warp: 86.84%)
-- [~] 入力幅 / ゲート数 / LUT2 vs LUT4 vs LUT6 の小規模比較(`scripts/sweep_m2a.sh` 実行中)
-- [ ] 3 seed 以上で比較
+- [x] 入力幅 / ゲート数 / LUT2 vs LUT4 vs LUT6 の小規模比較(sweep_m2a/m2b。最良 LUT6 warp 512 bit: 90.80%。入力を広げると下がる)
+- [~] 3 seed 以上で比較(LUT6 warp 512 bit の s1/s2 を `scripts/sweep_m2c.sh` で実行中)
 
 ## M3: C コード生成
 
