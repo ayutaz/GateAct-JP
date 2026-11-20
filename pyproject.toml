@@ -37,6 +37,9 @@ dev = [
     "ruff>=0.8",
     "mypy>=1.10",
 ]
+device = [
+    "pyserial>=3.5",
+]
 
 [build-system]
 requires = ["uv_build>=0.8,<0.12"]
