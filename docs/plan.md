@@ -59,7 +59,7 @@ Claude Code はこの表の上から、未完了(`[ ]`)で依存が満たされ�
 
 - [x] IR export・回路圧縮・バンドル・C99 生成(`gateact export`、dense / dense-flat)
 - [x] PyTorch hard / IR / C の完全一致テスト(圧縮前後含む。`tests/integration/test_export_verify.py`)
-- [ ] サイズ測定(ゲート数・IR・C・.rodata) — 採用モデル確定後
+- [x] サイズ測定(ゲート数・IR・C・.rodata): LUT6 512 bit s0 と int8 n-gram / bit-linear の ESP32-S3 イメージ(docs/research.md)。dense vs dense-flat は未比較
 
 ## M4: ESP32-S3 実機評価
 

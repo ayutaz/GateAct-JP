@@ -71,3 +71,22 @@
 - False Action Rate は広い入力ほど低いが、Macro-F1 も大きく下がっている。no_action に
   倒れる傾向(観察 1 と同じ)で、改善ではない。
 - 以上から、M2 の本命は **LUT6 warp、512 bit、4,096 + 4,096** とし、3 seed で評価する。
+
+## 2026-11-21: M3 ESP32-S3 ファームウェアのサイズ(同じファームウェア、`GA_MODEL_KIND` 切り替え)
+
+`idf.py size --format json2` の実測(`results/export/*_esp32s3_size.json`)。ESP-IDF v5.5、
+esp32s3、`-O2` 相当の既定設定。ボードへの書き込みはしていない(実機の速度は M4)。
+
+| モデル | test exact(PC) | モデル重み | イメージ | `.rodata` | DIRAM 使用 | `.bss` |
+|---|---:|---:|---:|---:|---:|---:|
+| n-gram int8(65,536 × 40 + 出力層) | 98.87% | 2,622,144 B | 2,833,744 B | 2,672,096 B | 102,151 B | 31,600 B |
+| bit-linear int8、512 bit | 93.60% | 8,256 B | 224,064 B | 62,320 B | 98,407 B | 27,856 B |
+| Griffith LUT6 warp、512 bit(圧縮後 28,574 ゲート) | 90.80% | — | 585,371 B | 421,120 B | 122,895 B | 52,344 B |
+
+- `.rodata` には評価用の同梱サンプル(SELFTEST 用 200 文)が全モデル共通で入る。bit-linear の
+  `.rodata`(62 KB)から重み 8 KB を引いた約 54 KB がその共通分。
+- int8 量子化の精度: n-gram 98.83% → 98.87%、bit-linear 93.52% → 93.60%(どちらも seed 0、
+  test)。量子化による低下は無かった。
+- Griffith LUT6 は n-gram の約 1/6 のイメージだが精度は 8 point 低い。bit-linear は LUT6 より
+  小さく、精度も高い。**このデータでは、サイズと精度の両方で LUT 回路が bit-linear に負けている**
+  (速度は未測定)。
