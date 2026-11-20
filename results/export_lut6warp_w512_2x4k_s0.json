@@ -1,0 +1,78 @@
+{
+ "checkpoint": "/var/folders/67/n9z_ywpx40d9khwr6sxm8n_40000gn/T/tmpftdn5jyg/gateact_smoke.pt",
+ "compress": "fast",
+ "dense_flat": "off",
+ "parity": {
+  "n": 20,
+  "torch_vs_ir_raw_mismatch": 0,
+  "ir_raw_vs_ir_compressed_mismatch": 0,
+  "ir_vs_c_mismatch": 0,
+  "prediction_agreement": 1.0
+ },
+ "sizes": {
+  "gates_raw": 2048,
+  "gates_compressed": 1870,
+  "compress_info": {
+   "level": "fast",
+   "applied": [
+    "sweep"
+   ],
+   "skipped": [],
+   "gates": {
+    "sweep": [
+     2048,
+     1870
+    ]
+   }
+  },
+  "ir_json_bytes_raw": 29044,
+  "ir_json_bytes_compressed": 25944,
+  "model_c_bytes": 18977,
+  "ctx_bytes": 1872,
+  "host_object_file_bytes": 11416,
+  "host_object_text_bytes": 9163
+ },
+ "model_config": {
+  "input_bits": 512,
+  "hidden": [
+   1024
+  ],
+  "output_gates": 1024,
+  "num_classes": 16,
+  "n_inputs": 2,
+  "tau": 8.0,
+  "connections": "unique",
+  "parameterization": "softmax",
+  "residual_init": false,
+  "grad_factor": 1.0
+ },
+ "features": {
+  "width": 512,
+  "ngram_orders": [
+   1,
+   2,
+   3
+  ],
+  "num_hashes": 1,
+  "spec": "gateact-feat-v1",
+  "norm": "gateact-norm-v1"
+ },
+ "labels": [
+  "no_action",
+  "look_up",
+  "look_down",
+  "look_left",
+  "look_right",
+  "look_center",
+  "nod",
+  "shake",
+  "bow",
+  "expr_happy",
+  "expr_surprised",
+  "expr_sad",
+  "led_on",
+  "led_off",
+  "volume_up",
+  "volume_down"
+ ]
+}

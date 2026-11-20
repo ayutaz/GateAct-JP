@@ -1,7 +1,8 @@
 """学習済み checkpoint を IR → (圧縮) → C に変換し、全段の整数一致とサイズを測る。
 
 照合の段:
-    PyTorch hard 推論 == IR simulate(圧縮前) == IR simulate(圧縮後) == 生成 C(ホスト)
+    PyTorch hard 推論 == IR simulate(抽出したまま) == IR simulate(LUT6 分割後・圧縮前)
+    == IR simulate(圧縮後) == 生成 C(ホスト)
 
 入力は Python の特徴量(``extract_bits``)。C 特徴量との一致は
 ``tests/integration/test_features_c_parity.py`` が別に保証し、テキストから Action までの
@@ -26,6 +27,7 @@ from gateact.export.pipeline import (
     CModelRunner,
     export_bundle,
     simulate_bundle,
+    simulate_model_ir,
     torch_hard_scores,
 )
 from gateact.features.hashing import extract_bits
@@ -95,6 +97,7 @@ def export_and_verify(
     bits = extract_bits(list(texts), fcfg)
 
     torch_scores = torch_hard_scores(model, bits, tau=mcfg.tau)
+    ir_orig = simulate_model_ir(model, bits, input_width=fcfg.width)
     raw = export_bundle(model, input_width=fcfg.width, name="gateact", compress="none",
                         labels=meta.get("labels"))  # fmt: skip
     comp = export_bundle(model, input_width=fcfg.width, name="gateact", compress=compress,
@@ -133,6 +136,7 @@ def export_and_verify(
         "dense_flat": dense_flat,
         "parity": {
             "n": len(texts),
+            "torch_vs_ir_mismatch": _mismatch(torch_scores, ir_orig),
             "torch_vs_ir_raw_mismatch": _mismatch(torch_scores, ir_raw),
             "ir_raw_vs_ir_compressed_mismatch": _mismatch(ir_raw, ir_comp),
             "ir_vs_c_mismatch": _mismatch(ir_comp, c_scores),

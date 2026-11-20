@@ -2,7 +2,7 @@
  "kind": "bitlinear",
  "meta": {
   "gateact_version": "0.0.1",
-  "git_sha": "bafd68a9defd3a8cfde4d72afb8a62fb28d351db",
+  "git_sha": "fc7981850f216fa2f38edbc006a5abc97bab0164",
   "seed": 0,
   "data_sha256": {
    "train.jsonl": "570ae9e0f0516b8a9201efbaf664c368a4cce1d41da0aab0559a6b46ffb5f306",
@@ -40,61 +40,61 @@
     "epoch": 1,
     "train_loss": 0.456835806978787,
     "dev_exact": 0.9349406812093379,
-    "seconds": 0.1354800001718104
+    "seconds": 0.16438100021332502
    },
    {
     "epoch": 2,
     "train_loss": 0.21239672028273904,
     "dev_exact": 0.939150401836969,
-    "seconds": 0.12219766667112708
+    "seconds": 0.13260799972340465
    },
    {
     "epoch": 3,
     "train_loss": 0.1807202279094441,
     "dev_exact": 0.9399158055874474,
-    "seconds": 0.11856125015765429
+    "seconds": 0.11548758298158646
    },
    {
     "epoch": 4,
     "train_loss": 0.16499512550238454,
     "dev_exact": 0.9441255262150785,
-    "seconds": 0.11675983387976885
+    "seconds": 0.10367387486621737
    },
    {
     "epoch": 5,
     "train_loss": 0.1561891218243644,
     "dev_exact": 0.9406812093379258,
-    "seconds": 0.12150712497532368
+    "seconds": 0.09811120806261897
    },
    {
     "epoch": 6,
     "train_loss": 0.1522416884121548,
     "dev_exact": 0.9380022962112514,
-    "seconds": 0.12436170922592282
+    "seconds": 0.1005572909489274
    },
    {
     "epoch": 7,
     "train_loss": 0.14534497206756172,
     "dev_exact": 0.9368541905855339,
-    "seconds": 0.12306491704657674
+    "seconds": 0.10111162532120943
    },
    {
     "epoch": 8,
     "train_loss": 0.144185483160007,
     "dev_exact": 0.9353233830845771,
-    "seconds": 0.12393291713669896
+    "seconds": 0.10556208295747638
    },
    {
     "epoch": 9,
     "train_loss": 0.1407982485220506,
     "dev_exact": 0.9360887868350555,
-    "seconds": 0.11879695812240243
+    "seconds": 0.10250295884907246
    },
    {
     "epoch": 10,
     "train_loss": 0.13918144757863501,
     "dev_exact": 0.9349406812093379,
-    "seconds": 0.11869100015610456
+    "seconds": 0.09963008295744658
    }
   ]
  },
@@ -563,7 +563,7 @@
   "negation_accuracy": 0.9508840864440079,
   "json_exact": 0.7213930348258707,
   "json_exact_count": 1885,
-  "pc_predict_ms_per_sample": 0.061061200491550824
+  "pc_predict_ms_per_sample": 0.061024684306423736
  },
  "test": {
   "n": 2826,
@@ -1033,7 +1033,7 @@
     0.9381174838449342
    ]
   },
-  "pc_predict_ms_per_sample": 0.05693307676354538,
+  "pc_predict_ms_per_sample": 0.06246747483973248,
   "predictions": [
    "look_up",
    "look_up",
@@ -3953,5 +3953,6 @@
  },
  "coverage": 0.6216454025516938,
  "full_test_json_exact": 0.44852617685877694,
- "n_test_all": 4546
+ "n_test_all": 4546,
+ "checkpoint": "runs/baselines/bitlinear_w512_s0.pt"
 }

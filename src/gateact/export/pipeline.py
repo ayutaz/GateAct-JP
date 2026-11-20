@@ -23,6 +23,8 @@ from griffith_logic.ir import validate
 from griffith_logic.ir.serialize import ir_from_dict, ir_to_dict
 from griffith_logic.ir.simulate import simulate
 
+from gateact.export.lut6 import has_wide_luts, split_wide_luts
+
 _COMMON = Path(__file__).resolve().parents[3] / "firmware" / "common"
 
 
@@ -65,13 +67,25 @@ def export_bundle(
     model.eval()
     ir = export_ir(model, input_width=input_width, name=name)
     validate(ir, target="hdl")
-    doc: dict[str, Any] = {"ir": ir_to_dict(ir)}
+    ir_dict = ir_to_dict(ir)
+    if has_wide_luts(ir_dict):
+        # Griffith の C 生成は n_inputs > 5 を扱えないので、等価な LUT5 + LUT3 に分ける
+        ir_dict = split_wide_luts(ir_dict)
+        validate(ir_from_dict(ir_dict), target="hdl")
+    doc: dict[str, Any] = {"ir": ir_dict}
     if labels is not None:
         doc["labels"] = list(labels)
     if compress != "none":
         doc, info, _ = apply_compress(doc, level=compress)
         doc = attach_compress_info(doc, info)
     return build_bundle(doc, verify=True)
+
+
+def simulate_model_ir(model: nn.Module, bits: np.ndarray, *, input_width: int) -> np.ndarray:
+    """モデルから抽出した(分割・圧縮する前の)IR をそのまま simulate する。"""
+    model.eval()
+    ir = export_ir(model, input_width=input_width, name="orig")
+    return simulate(ir, np.asarray(bits, dtype=np.uint8)).astype(np.int64)
 
 
 def simulate_bundle(bundle: dict[str, Any], bits: np.ndarray) -> np.ndarray:

@@ -89,5 +89,9 @@ def run(args: argparse.Namespace) -> int:
         f"gates {s['gates_raw']} -> {s['gates_compressed']}, ctx={s['ctx_bytes']}B, "
         f"model.c={s['model_c_bytes']}B"
     )
-    bad = p["torch_vs_ir_raw_mismatch"] + p["ir_raw_vs_ir_compressed_mismatch"]
+    bad = (
+        p["torch_vs_ir_mismatch"]
+        + p["torch_vs_ir_raw_mismatch"]
+        + p["ir_raw_vs_ir_compressed_mismatch"]
+    )
     return 1 if bad + p["ir_vs_c_mismatch"] else 0

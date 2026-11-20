@@ -36,6 +36,7 @@ def test_all_stages_match(checkpoint: Path, tmp_path: Path, dense_flat: str) -> 
     report = export_and_verify(checkpoint, texts, tmp_path, n_samples=8, dense_flat=dense_flat)
     p = report["parity"]
     assert p["n"] == len(texts)
+    assert p["torch_vs_ir_mismatch"] == 0
     assert p["torch_vs_ir_raw_mismatch"] == 0
     assert p["ir_raw_vs_ir_compressed_mismatch"] == 0
     assert p["ir_vs_c_mismatch"] == 0
@@ -47,3 +48,19 @@ def test_all_stages_match(checkpoint: Path, tmp_path: Path, dense_flat: str) -> 
     assert (tmp_path / "model" / "samples.h").exists()
     saved = json.loads((tmp_path / "export_report.json").read_text())
     assert saved["parity"] == p
+
+
+@pytest.mark.needs_cc
+def test_lut6_model_exports_through_split(tmp_path: Path) -> None:
+    rows = load_jsonl(ROOT / "tests" / "fixtures" / "action_mini.jsonl")
+    data = [Labeled(r, SPEC.assign(r.calls)) for r in rows if SPEC.assign(r.calls).in_scope]
+    feat = FeatureConfig(width=256)
+    mcfg = LutModelConfig(input_bits=256, hidden=[128], output_gates=128, num_classes=16, tau=4.0,
+                          n_inputs=6, parameterization="warp", connections="unique")  # fmt: skip
+    out = train_lut(mcfg, feat, TrainConfig(epochs=3, lr=0.05, batch_size=8), data, data, SPEC)
+    ck = save_checkpoint(tmp_path / "m6.pt", out.model, mcfg, feat, SPEC)
+    texts = [r.text for r in rows]
+    rep = export_and_verify(ck, texts, tmp_path / "o", n_samples=4)
+    p = rep["parity"]
+    assert p["torch_vs_ir_mismatch"] == 0 and p["torch_vs_ir_raw_mismatch"] == 0
+    assert p["ir_raw_vs_ir_compressed_mismatch"] == 0 and p["ir_vs_c_mismatch"] == 0

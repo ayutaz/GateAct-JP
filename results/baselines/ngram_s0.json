@@ -2,7 +2,7 @@
  "kind": "ngram",
  "meta": {
   "gateact_version": "0.0.1",
-  "git_sha": "bafd68a9defd3a8cfde4d72afb8a62fb28d351db",
+  "git_sha": "fc7981850f216fa2f38edbc006a5abc97bab0164",
   "seed": 0,
   "data_sha256": {
    "train.jsonl": "570ae9e0f0516b8a9201efbaf664c368a4cce1d41da0aab0559a6b46ffb5f306",
@@ -31,61 +31,61 @@
     "epoch": 1,
     "train_loss": 0.48346155943992014,
     "dev_exact": 0.9758897818599311,
-    "seconds": 2.4882332501001656
+    "seconds": 2.5276899579912424
    },
    {
     "epoch": 2,
     "train_loss": 0.04414370592863098,
     "dev_exact": 0.9831611174894757,
-    "seconds": 2.549771707970649
+    "seconds": 2.5042112921364605
    },
    {
     "epoch": 3,
     "train_loss": 0.013021882266004774,
     "dev_exact": 0.98584003061615,
-    "seconds": 2.56442187493667
+    "seconds": 2.617905375082046
    },
    {
     "epoch": 4,
     "train_loss": 0.005178576614853395,
     "dev_exact": 0.9862227324913893,
-    "seconds": 2.4696440836414695
+    "seconds": 2.720229582861066
    },
    {
     "epoch": 5,
     "train_loss": 0.0026369678747334676,
     "dev_exact": 0.9877535399923459,
-    "seconds": 2.5052522500045598
+    "seconds": 2.5123621663078666
    },
    {
     "epoch": 6,
     "train_loss": 0.0015328120618908606,
     "dev_exact": 0.9881362418675852,
-    "seconds": 2.4883593330159783
+    "seconds": 2.505587208084762
    },
    {
     "epoch": 7,
     "train_loss": 0.0009801954226957084,
     "dev_exact": 0.9889016456180635,
-    "seconds": 2.4681240832433105
+    "seconds": 2.6555330832488835
    },
    {
     "epoch": 8,
     "train_loss": 0.0006812310376580052,
     "dev_exact": 0.9892843474933027,
-    "seconds": 2.469589834101498
+    "seconds": 2.9914341252297163
    },
    {
     "epoch": 9,
     "train_loss": 0.0004862850415845398,
     "dev_exact": 0.9889016456180635,
-    "seconds": 2.462202166672796
+    "seconds": 4.243368333671242
    },
    {
     "epoch": 10,
     "train_loss": 0.0003535829528196283,
     "dev_exact": 0.9892843474933027,
-    "seconds": 2.5046179997734725
+    "seconds": 5.365252874791622
    }
   ]
  },
@@ -554,7 +554,7 @@
   "negation_accuracy": 0.9980353634577603,
   "json_exact": 0.7581324148488328,
   "json_exact_count": 1981,
-  "pc_predict_ms_per_sample": 0.01383708077819695
+  "pc_predict_ms_per_sample": 0.01703010596851029
  },
  "test": {
   "n": 2826,
@@ -1024,7 +1024,7 @@
     0.9901526262430577
    ]
   },
-  "pc_predict_ms_per_sample": 0.013417580645460232,
+  "pc_predict_ms_per_sample": 0.031768518512553134,
   "predictions": [
    "look_up",
    "look_up",
@@ -3940,5 +3940,6 @@
  },
  "coverage": 0.6216454025516938,
  "full_test_json_exact": 0.47404311482622086,
- "n_test_all": 4546
+ "n_test_all": 4546,
+ "checkpoint": "runs/baselines/ngram_s0.pt"
 }
