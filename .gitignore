@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# データ(非公開・大容量。Git に含めない。docs/data.md 参照)
+data/
+!tests/fixtures/**
+
+# 学習・実験の生成物(要約は results/ にコミットする)
+runs/
+artifacts/
+*.pt
+*.ckpt
+wandb/
+
+# ESP-IDF
+firmware/**/build/
+firmware/**/sdkconfig
+firmware/**/sdkconfig.old
+firmware/**/managed_components/
+firmware/**/dependencies.lock
+firmware/esp32s3/*/main/model/
+
+# 秘密情報
+.env
+*.token
+.claude/settings.local.json
+
+# OS
+.DS_Store

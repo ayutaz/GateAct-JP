@@ -1,0 +1,19 @@
+GateAct-JP
+Copyright 2026 ayutaz
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Third-party components and data:
+
+- Griffith (griffith-logic, https://github.com/tsukushi-gate/Griffith), Apache-2.0,
+  Copyright Masato Akiho. Used as a Python dependency pinned by Git commit SHA. The C99 runtime
+  files (mdl_kernels.*, mdl_simd.h) emitted by `griffith deploy codegen-c` into generated model
+  directories are part of Griffith and remain under its Apache-2.0 license.
+- JapaneseTinyAgentLM (https://github.com/ayutaz/JapaneseTinyAgentLM), Apache-2.0,
+  Copyright 2026 ayutaz. The Action schema, evaluation definitions and the n-gram classifier
+  baseline are re-implemented here following its documentation; no source files are copied.
+- JapaneseTinyAgentLM-Action-Synth dataset
+  (https://huggingface.co/datasets/japanese-data-analyze/JapaneseTinyAgentLM-Action-Synth),
+  Apache-2.0 (since 2026-10-20). Not redistributed in this repository; download it yourself
+  (see docs/data.md). Only aggregate statistics and SHA-256 hashes are committed.
+- ESP-IDF (https://github.com/espressif/esp-idf), Apache-2.0, used to build the firmware.

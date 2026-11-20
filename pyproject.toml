@@ -1,0 +1,93 @@
+[project]
+name = "gateact-jp"
+version = "0.0.1"
+description = "Japanese robot-action classifier built from differentiable logic gates (Griffith), deployable to ESP32-S3"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "ayutaz" }]
+keywords = ["logic-gate-network", "dlgn", "edge-ai", "esp32", "japanese", "nlp"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Programming Language :: Python :: 3.12",
+    "Natural Language :: Japanese",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    # Griffith は開発初期のため Git commit SHA で固定する(docs/development.md)
+    "griffith-logic",
+    "numpy>=1.26",
+    "torch>=2.8.0",
+]
+
+[project.urls]
+Repository = "https://github.com/ayutaz/GateAct-JP"
+
+[project.scripts]
+gateact = "gateact.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+    "ruff>=0.8",
+    "mypy>=1.10",
+]
+
+[build-system]
+requires = ["uv_build>=0.8,<0.12"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "gateact"
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+griffith-logic = { git = "https://github.com/tsukushi-gate/Griffith", rev = "e0675f4e36596954aa424d522e0ee966bba9a3e1" }
+# Linux(CI)は CUDA 依存を引かない軽量な CPU 版を使う。macOS は PyPI(MPS 対応)
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["firmware/**/build", "firmware/**/managed_components"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "W", "D"]
+ignore = ["D100", "D104", "D105", "D107", "D415"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D"]
+"scripts/**" = ["D"]
+"firmware/**" = ["D"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+files = ["src/gateact"]
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -m 'not slow and not device'"
+markers = [
+    "slow: 時間のかかるテスト(ローカルで明示実行)",
+    "device: ESP32-S3 実機が必要なテスト",
+    "needs_cc: C コンパイラが必要なテスト(無ければ skip)",
+]
+
+[tool.coverage.run]
+source = ["gateact"]
+branch = true
+
+[tool.coverage.report]
+precision = 1
+show_missing = true
