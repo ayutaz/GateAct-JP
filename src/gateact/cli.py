@@ -16,6 +16,9 @@ def build_parser() -> argparse.ArgumentParser:
     from gateact.data import cli as data_cli
 
     data_cli.register(sub)
+    from gateact.baselines import cli as baseline_cli
+
+    baseline_cli.register(sub)
     return parser
 
 
