@@ -1,0 +1,6 @@
+{
+  "name": "lut_tiny",
+  "features": {"width": 256},
+  "model": {"hidden": [256], "output_gates": 256, "num_classes": 16, "tau": 4.0, "connections": "unique"},
+  "train": {"epochs": 2, "lr": 0.05, "batch_size": 8}
+}

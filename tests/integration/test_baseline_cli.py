@@ -33,3 +33,13 @@ def test_baseline_cli_writes_result(kind: str, data_dir: Path, tmp_path: Path) -
     assert r["split_sizes"]["removed_leakage"] == 24
     assert r["test"]["n"] == 20 and r["test_out_of_scope"]["n"] == 4
     assert 0 <= r["full_test_json_exact"] <= 1
+
+
+def test_train_cli_writes_checkpoint_and_result(data_dir: Path, tmp_path: Path) -> None:
+    out, runs = tmp_path / "out", tmp_path / "runs"
+    rc = main(["train", str(ROOT / "tests/fixtures/lut_tiny.json"), "--data-dir", str(data_dir),
+               "--dev-frac", "0.0", "--n-boot", "5", "--out", str(out), "--runs", str(runs)])  # fmt: skip
+    assert rc == 0
+    r = json.loads((out / "lut_tiny_s0.json").read_text())
+    assert r["kind"] == "lut" and r["model"]["gates_before_compression"] == 512
+    assert Path(r["checkpoint"]).exists()

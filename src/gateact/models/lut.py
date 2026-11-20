@@ -20,7 +20,10 @@ class LutModelConfig:
         num_classes: クラス数(GroupSum の k)。
         n_inputs: 各 LUT の入力数(2 = LUT2、4 = LUT4、6 = LUT6)。
         tau: GroupSum の温度。hard 推論ではスコア = 整数カウント / tau。
-        connections: LutLayer の結線方式(Griffith の ``connections`` 引数)。
+        connections: LutLayer の結線方式(``random`` / ``unique``)。
+        parameterization: LUT のパラメータ化(Griffith ``LutLayer`` の引数)。
+        residual_init: パススルー寄りの初期化(深い層で学習を安定させる)。
+        grad_factor: 勾配スケール(深いモデルでは >1)。
     """
 
     input_bits: int
@@ -30,6 +33,9 @@ class LutModelConfig:
     n_inputs: int = 2
     tau: float = 10.0
     connections: str = "random"
+    parameterization: str = "softmax"
+    residual_init: bool = False
+    grad_factor: float = 1.0
 
     def to_dict(self) -> dict[str, Any]:
         """JSON 保存用の dict を返す。"""
@@ -54,7 +60,15 @@ def build_lut_model(cfg: LutModelConfig) -> nn.Sequential:
         )
     widths = [cfg.input_bits, *cfg.hidden, cfg.output_gates]
     layers: list[nn.Module] = [
-        LutLayer(a, b, n_inputs=cfg.n_inputs, connections=cfg.connections)
+        LutLayer(
+            a,
+            b,
+            n_inputs=cfg.n_inputs,
+            connections=cfg.connections,
+            parameterization=cfg.parameterization,
+            residual_init=cfg.residual_init,
+            grad_factor=cfg.grad_factor,
+        )
         for a, b in zip(widths[:-1], widths[1:], strict=True)
     ]
     layers.append(GroupSum(k=cfg.num_classes, tau=cfg.tau))
