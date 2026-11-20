@@ -90,3 +90,5 @@ esp32s3、`-O2` 相当の既定設定。ボードへの書き込みはしてい�
 - Griffith LUT6 は n-gram の約 1/6 のイメージだが精度は 8 point 低い。bit-linear は LUT6 より
   小さく、精度も高い。**このデータでは、サイズと精度の両方で LUT 回路が bit-linear に負けている**
   (速度は未測定)。
+- dense-flat(`--dense-flat on`)は LUT6 モデルには適用されなかった。Griffith の判定は
+  「対象の2入力lut_layer列が無い(従来経路)」で、生成 C は off と同一(LUT2 層だけが対象)。
