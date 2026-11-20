@@ -1,0 +1,174 @@
+{
+ "environment": "host (NOT ESP32-S3)",
+ "machine": "arm64",
+ "platform": "macOS-26.3-arm64-arm-64bit",
+ "processor": "arm",
+ "compile": "cc -std=c99 -O2 -DHOST_BUILD -DMDL_NO_DEFAULT_CTX -DBENCH_ITERS=2000",
+ "model_dir": "runs/export/bitlinear_w512_s0/model",
+ "git_sha": "21a5ec943768c2dfde77cd861242da2ac67eee7f",
+ "iters": 2000,
+ "runs": [
+  {
+   "INFO": {
+    "platform": "host",
+    "model": "bitlinear_w512_s0",
+    "kind": 2,
+    "gates": 0,
+    "feature_spec": "gateact-feat-v1",
+    "width": 512,
+    "ngram_mask": 7,
+    "num_hashes": 1,
+    "classes": 16,
+    "ctx_bytes": 0,
+    "samples": 64,
+    "bench_iters": 2000
+   },
+   "SELFTEST": {
+    "n": 64,
+    "errors": 0,
+    "feature_mismatch": 0,
+    "score_mismatch": 0,
+    "labeled": 64,
+    "correct": 61,
+    "score_hash": "a4b55aa2"
+   },
+   "BENCH": {
+    "platform": "host",
+    "iters": 2000,
+    "unit": "us",
+    "features": {
+     "mean": 0.277,
+     "min": 0.125,
+     "p50": 0.291,
+     "p95": 0.375,
+     "p99": 0.416,
+     "max": 0.5
+    },
+    "model": {
+     "mean": 0.622,
+     "min": 0.416,
+     "p50": 0.625,
+     "p95": 0.75,
+     "p99": 0.792,
+     "max": 0.958
+    },
+    "total": {
+     "mean": 0.899,
+     "min": 0.583,
+     "p50": 0.916,
+     "p95": 1.125,
+     "p99": 1.208,
+     "max": 1.333
+    }
+   }
+  },
+  {
+   "INFO": {
+    "platform": "host",
+    "model": "bitlinear_w512_s0",
+    "kind": 2,
+    "gates": 0,
+    "feature_spec": "gateact-feat-v1",
+    "width": 512,
+    "ngram_mask": 7,
+    "num_hashes": 1,
+    "classes": 16,
+    "ctx_bytes": 0,
+    "samples": 64,
+    "bench_iters": 2000
+   },
+   "SELFTEST": {
+    "n": 64,
+    "errors": 0,
+    "feature_mismatch": 0,
+    "score_mismatch": 0,
+    "labeled": 64,
+    "correct": 61,
+    "score_hash": "a4b55aa2"
+   },
+   "BENCH": {
+    "platform": "host",
+    "iters": 2000,
+    "unit": "us",
+    "features": {
+     "mean": 0.502,
+     "min": 0.25,
+     "p50": 0.5,
+     "p95": 0.708,
+     "p99": 0.709,
+     "max": 0.834
+    },
+    "model": {
+     "mean": 1.156,
+     "min": 0.75,
+     "p50": 1.167,
+     "p95": 1.417,
+     "p99": 1.459,
+     "max": 3.583
+    },
+    "total": {
+     "mean": 1.658,
+     "min": 1.041,
+     "p50": 1.667,
+     "p95": 2.125,
+     "p99": 2.167,
+     "max": 3.833
+    }
+   }
+  },
+  {
+   "INFO": {
+    "platform": "host",
+    "model": "bitlinear_w512_s0",
+    "kind": 2,
+    "gates": 0,
+    "feature_spec": "gateact-feat-v1",
+    "width": 512,
+    "ngram_mask": 7,
+    "num_hashes": 1,
+    "classes": 16,
+    "ctx_bytes": 0,
+    "samples": 64,
+    "bench_iters": 2000
+   },
+   "SELFTEST": {
+    "n": 64,
+    "errors": 0,
+    "feature_mismatch": 0,
+    "score_mismatch": 0,
+    "labeled": 64,
+    "correct": 61,
+    "score_hash": "a4b55aa2"
+   },
+   "BENCH": {
+    "platform": "host",
+    "iters": 2000,
+    "unit": "us",
+    "features": {
+     "mean": 0.313,
+     "min": 0.125,
+     "p50": 0.333,
+     "p95": 0.417,
+     "p99": 0.459,
+     "max": 0.541
+    },
+    "model": {
+     "mean": 0.723,
+     "min": 0.5,
+     "p50": 0.709,
+     "p95": 0.875,
+     "p99": 0.917,
+     "max": 1.0
+    },
+    "total": {
+     "mean": 1.036,
+     "min": 0.666,
+     "p50": 1.042,
+     "p95": 1.333,
+     "p99": 1.334,
+     "max": 1.417
+    }
+   }
+  }
+ ]
+}

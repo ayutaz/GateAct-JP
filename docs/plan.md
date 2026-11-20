@@ -53,7 +53,7 @@ Claude Code はこの表の上から、未完了(`[ ]`)で依存が満たされ�
 - [x] LUT2 モデル構築・学習ループ・checkpoint・soft/hard 評価(dev の hard 精度で epoch 選択)
 - [x] 1 seed で学習 → PC 精度測定(LUT2 2×4k: 71.37% — 不十分。LUT4 warp: 86.84%)
 - [x] 入力幅 / ゲート数 / LUT2 vs LUT4 vs LUT6 の小規模比較(sweep_m2a/m2b。最良 LUT6 warp 512 bit: 90.80%。入力を広げると下がる)
-- [~] 3 seed 以上で比較(LUT6 warp 512 bit の s1/s2 を `scripts/sweep_m2c.sh` で実行中)
+- [x] 3 seed 以上で比較(LUT6 warp 512 bit: 91.21 ± 0.38%。docs/research.md)
 
 ## M3: C コード生成
 
@@ -66,6 +66,7 @@ Claude Code はこの表の上から、未完了(`[ ]`)で依存が満たされ�
 - [x] ファームウェア(シリアル UTF-8 入力 → 特徴量 → 推論 → JSON 出力 + 時間)
 - [x] ベンチマークモード(同梱サンプル、既定 2,000 回、P50/P95/P99)
 - [x] ホストビルドで Python と同じ出力を確認(LUT / bit-linear / n-gram)
+- [x] ホスト C の推論時間(`scripts/host_bench.py`、PC の参考値。`results/host/`)
 - [ ] BLOCKED(ボード未接続): 実機での書き込み・一致率・Flash/RAM/heap・レイテンシ
   (`docs/hardware.md`、`scripts/esp32_bench.py` は準備済み)
 - [x] n-gram / bit-linear の int8 C 実装とファームウェア切り替え(GA_MODEL_KIND 2/3)
