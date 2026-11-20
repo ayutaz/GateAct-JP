@@ -28,6 +28,9 @@ Repository = "https://github.com/ayutaz/GateAct-JP"
 gateact = "gateact.cli:main"
 
 [dependency-groups]
+data = [
+    "huggingface-hub>=2.4.0",
+]
 dev = [
     "pytest>=8",
     "pytest-cov>=5",

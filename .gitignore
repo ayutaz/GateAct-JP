@@ -13,7 +13,7 @@ coverage.xml
 htmlcov/
 
 # データ(非公開・大容量。Git に含めない。docs/data.md 参照)
-data/
+/data/
 !tests/fixtures/**
 
 # 学習・実験の生成物(要約は results/ にコミットする)

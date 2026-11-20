@@ -1,0 +1,102 @@
+{
+  "source": "japanese-data-analyze/JapaneseTinyAgentLM-Action-Synth",
+  "revision": "6ac72256456d8e76fca4708823c853438331619f",
+  "label_spec": "labels_v1",
+  "splits": {
+    "train": {
+      "file": "train.jsonl",
+      "sha256": "570ae9e0f0516b8a9201efbaf664c368a4cce1d41da0aab0559a6b46ffb5f306",
+      "n": 85902,
+      "categories": {
+        "correction": 5078,
+        "multi_action": 24202,
+        "negation": 10502,
+        "no_action": 17281,
+        "single": 28839
+      },
+      "labels": {
+        "no_action": 27783,
+        "look_up": 4200,
+        "look_down": 3156,
+        "look_left": 3092,
+        "look_right": 2903,
+        "look_center": 1394,
+        "nod": 3469,
+        "shake": 261,
+        "bow": 123,
+        "expr_happy": 1772,
+        "expr_surprised": 1253,
+        "expr_sad": 971,
+        "led_on": 1939,
+        "led_off": 191,
+        "volume_up": 255,
+        "volume_down": 353
+      },
+      "out_of_scope": {
+        "multi_action": 24202,
+        "unsupported:adjust_brightness": 539,
+        "unsupported:look": 2940,
+        "unsupported:set_brightness": 469,
+        "unsupported:set_expression": 963,
+        "unsupported:set_volume": 661,
+        "unsupported:turn": 3013
+      },
+      "coverage": 0.6183208772787595,
+      "arg_loss": 12349,
+      "arg_loss_rate": 0.2324955285700838,
+      "duplicate_groups": 0,
+      "duplicate_rows": 0,
+      "conflicting_duplicate_groups": 0
+    },
+    "validation": {
+      "file": "validation.jsonl",
+      "sha256": "795e853da8f99298259b8b9a9c0d3bac9be34ae5f8fb701cf101dd1a74dd3333",
+      "n": 4546,
+      "categories": {
+        "correction": 255,
+        "multi_action": 1265,
+        "negation": 562,
+        "no_action": 951,
+        "single": 1513
+      },
+      "labels": {
+        "no_action": 1513,
+        "look_up": 192,
+        "look_down": 181,
+        "look_left": 167,
+        "look_right": 151,
+        "look_center": 74,
+        "nod": 167,
+        "shake": 10,
+        "bow": 6,
+        "expr_happy": 98,
+        "expr_surprised": 54,
+        "expr_sad": 61,
+        "led_on": 103,
+        "led_off": 5,
+        "volume_up": 15,
+        "volume_down": 29
+      },
+      "out_of_scope": {
+        "multi_action": 1265,
+        "unsupported:adjust_brightness": 32,
+        "unsupported:look": 150,
+        "unsupported:set_brightness": 21,
+        "unsupported:set_expression": 49,
+        "unsupported:set_volume": 41,
+        "unsupported:turn": 162
+      },
+      "coverage": 0.6216454025516938,
+      "arg_loss": 643,
+      "arg_loss_rate": 0.22753007784854917,
+      "duplicate_groups": 0,
+      "duplicate_rows": 0,
+      "conflicting_duplicate_groups": 0
+    }
+  },
+  "overlap_normalized_text": {
+    "train&validation": 0
+  },
+  "license": "Apache-2.0",
+  "sha256_matches_pinned": true
+}

@@ -12,7 +12,10 @@ def build_parser() -> argparse.ArgumentParser:
     """全サブコマンドを登録した ArgumentParser を返す。"""
     parser = argparse.ArgumentParser(prog="gateact", description="GateAct-JP command line")
     parser.add_argument("--version", action="version", version=f"gateact {__version__}")
-    parser.add_subparsers(dest="command")
+    sub = parser.add_subparsers(dest="command")
+    from gateact.data import cli as data_cli
+
+    data_cli.register(sub)
     return parser
 
 

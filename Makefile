@@ -37,7 +37,7 @@ train-smoke:
 	uv run pytest tests/integration -o addopts="-ra -m 'not device'"
 
 data:
-	uv run python scripts/fetch_data.py
+	uv run --group data python scripts/fetch_data.py
 	uv run gateact data-check --out results/data
 
 firmware-xor:
