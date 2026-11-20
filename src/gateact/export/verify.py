@@ -21,6 +21,7 @@ from typing import Any
 import numpy as np
 
 from gateact.export.codegen import write_samples_header
+from gateact.export.firmware import write_model_config_header, write_text_samples_header
 from gateact.export.pipeline import (
     CModelRunner,
     export_bundle,
@@ -110,6 +111,17 @@ def export_and_verify(
         bits[:n_s],
         labels=list(labels[:n_s]) if labels is not None else None,
         expected_scores=ir_comp[:n_s],
+    )
+    sample_labels = list(labels[:n_s]) if labels is not None else [-1] * n_s
+    write_text_samples_header(
+        model_dir / "text_samples.h", list(texts[:n_s]), sample_labels, bits[:n_s], ir_comp[:n_s]
+    )
+    write_model_config_header(
+        model_dir / "gateact_model_config.h",
+        fcfg,
+        meta.get("labels") or [str(i) for i in range(mcfg.num_classes)],
+        model_name=Path(checkpoint).stem,
+        gates=_ir_gates(comp),
     )
     header = (model_dir / "model.h").read_text(encoding="utf-8")
     ctx = re.search(r"#define MDL_CTX_BYTES (\d+)", header)

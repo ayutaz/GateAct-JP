@@ -1,4 +1,4 @@
-.PHONY: sync check lint fmt test cov typecheck build c-parity train-smoke data firmware firmware-xor clean
+.PHONY: sync check lint fmt test cov typecheck build c-parity train-smoke data firmware firmware-xor firmware-smoke clean
 
 IDF_EXPORT ?= $(HOME)/esp/esp-idf/export.sh
 # IDF の Python venv を先に PATH に置く(システム python3 のバージョン違い対策)
@@ -43,6 +43,10 @@ data:
 firmware-xor:
 	uv run python scripts/gen_firmware_model.py xor
 	bash -c '$(IDF) && cd firmware/esp32s3/xor && idf.py set-target esp32s3 && idf.py build && idf.py size'
+
+firmware-smoke:
+	uv run python scripts/gen_firmware_model.py gateact-smoke
+	$(MAKE) firmware
 
 firmware:
 	bash -c '$(IDF) && cd firmware/esp32s3/gateact && idf.py set-target esp32s3 && idf.py build && idf.py size'
