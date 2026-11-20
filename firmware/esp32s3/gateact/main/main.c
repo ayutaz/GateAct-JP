@@ -51,9 +51,13 @@
 #ifdef HOST_BUILD
 #include <time.h>
 static uint64_t ticks(void) {
+#if defined(__APPLE__)
+  return clock_gettime_nsec_np(CLOCK_UPTIME_RAW); /* macOS の CLOCK_MONOTONIC は µs 刻み */
+#else
   struct timespec ts;
   clock_gettime(CLOCK_MONOTONIC, &ts);
   return (uint64_t)ts.tv_sec * 1000000000ull + (uint64_t)ts.tv_nsec;
+#endif
 }
 static double ticks_per_us(void) { return 1000.0; }
 #define PLATFORM "host"
