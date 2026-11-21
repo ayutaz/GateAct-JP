@@ -11,6 +11,11 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
+/* glibc は -std=c99 だと clock_gettime を宣言しない(macOS は _POSIX_C_SOURCE を付けると
+ * clock_gettime_nsec_np が消えるので付けない) */
+#if defined(HOST_BUILD) && !defined(__APPLE__) && !defined(_POSIX_C_SOURCE)
+#define _POSIX_C_SOURCE 200809L
+#endif
 #include <stdint.h>
 #include <stdio.h>
 
