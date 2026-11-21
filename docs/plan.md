@@ -76,5 +76,5 @@ Claude Code はこの表の上から、未完了(`[ ]`)で依存が満たされ�
 
 - [x] 全ベースライン比較表、統計的ばらつき(`results/summary.md`、README)
 - [x] README(日本語 + 英語概要)、再現手順(実機の数値は M4 後に追記)
-- [ ] GitHub Release 準備(remote 作成後)
+- [x] GitHub Release 準備: v0.1.0 タグ、release.yml で下書き作成(公開は人が確認後)
 - [x] 次の研究課題(docs/research.md)
