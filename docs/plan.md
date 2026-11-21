@@ -54,7 +54,7 @@ Claude Code はこの表の上から、未完了(`[ ]`)で依存が満たされ�
 - [x] 1 seed で学習 → PC 精度測定(LUT2 2×4k: 71.37% — 不十分。LUT4 warp: 86.84%)
 - [x] 入力幅 / ゲート数 / LUT2 vs LUT4 vs LUT6 の小規模比較(sweep_m2a/m2b。最良 LUT6 warp 512 bit: 90.80%。入力を広げると下がる)
 - [x] 3 seed 以上で比較(LUT6 warp 512 bit: 91.21 ± 0.38%。docs/research.md)
-- [x] 改善実験(sweep_m2d/e/f): tau 4 で 93.97 ± 0.34%、ゲート 2 倍 + tau 8 で 94.99 ± 0.13%(3 seed)
+- [x] 改善実験(sweep_m2d/e/f): tau 4 で 93.97 ± 0.34%、ゲート 2 倍 + tau 8 で 94.99 ± 0.13%(3 seed)。tau 4 の 20 epoch は 94.33 ± 0.14%
 
 ## M3: C コード生成
 

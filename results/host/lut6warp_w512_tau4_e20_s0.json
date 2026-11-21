@@ -1,0 +1,174 @@
+{
+ "environment": "host (NOT ESP32-S3)",
+ "machine": "arm64",
+ "platform": "macOS-26.3-arm64-arm-64bit",
+ "processor": "arm",
+ "compile": "cc -std=c99 -O2 -DHOST_BUILD -DMDL_NO_DEFAULT_CTX -DBENCH_ITERS=2000",
+ "model_dir": "runs/export/lut6warp_w512_tau4_e20_s0/model",
+ "git_sha": "ce1e8268ae7d83ca8d68ad98cc0e5feab08a5d91",
+ "iters": 2000,
+ "runs": [
+  {
+   "INFO": {
+    "platform": "host",
+    "model": "lut6warp_w512_tau4_e20_s0",
+    "kind": 1,
+    "gates": 28560,
+    "feature_spec": "gateact-feat-v1",
+    "width": 512,
+    "ngram_mask": 7,
+    "num_hashes": 1,
+    "classes": 16,
+    "ctx_bytes": 24468,
+    "samples": 64,
+    "bench_iters": 2000
+   },
+   "SELFTEST": {
+    "n": 64,
+    "errors": 0,
+    "feature_mismatch": 0,
+    "score_mismatch": 0,
+    "labeled": 64,
+    "correct": 62,
+    "score_hash": "98ab2d85"
+   },
+   "BENCH": {
+    "platform": "host",
+    "iters": 2000,
+    "unit": "us",
+    "features": {
+     "mean": 0.329,
+     "min": 0.125,
+     "p50": 0.292,
+     "p95": 0.542,
+     "p99": 0.666,
+     "max": 1.125
+    },
+    "model": {
+     "mean": 49.147,
+     "min": 40.75,
+     "p50": 43.333,
+     "p95": 74.708,
+     "p99": 77.0,
+     "max": 90.583
+    },
+    "total": {
+     "mean": 49.476,
+     "min": 40.917,
+     "p50": 43.666,
+     "p95": 75.208,
+     "p99": 77.958,
+     "max": 91.0
+    }
+   }
+  },
+  {
+   "INFO": {
+    "platform": "host",
+    "model": "lut6warp_w512_tau4_e20_s0",
+    "kind": 1,
+    "gates": 28560,
+    "feature_spec": "gateact-feat-v1",
+    "width": 512,
+    "ngram_mask": 7,
+    "num_hashes": 1,
+    "classes": 16,
+    "ctx_bytes": 24468,
+    "samples": 64,
+    "bench_iters": 2000
+   },
+   "SELFTEST": {
+    "n": 64,
+    "errors": 0,
+    "feature_mismatch": 0,
+    "score_mismatch": 0,
+    "labeled": 64,
+    "correct": 62,
+    "score_hash": "98ab2d85"
+   },
+   "BENCH": {
+    "platform": "host",
+    "iters": 2000,
+    "unit": "us",
+    "features": {
+     "mean": 0.283,
+     "min": 0.125,
+     "p50": 0.291,
+     "p95": 0.375,
+     "p99": 0.458,
+     "max": 6.084
+    },
+    "model": {
+     "mean": 41.528,
+     "min": 40.708,
+     "p50": 41.083,
+     "p95": 43.209,
+     "p99": 46.208,
+     "max": 73.917
+    },
+    "total": {
+     "mean": 41.811,
+     "min": 40.916,
+     "p50": 41.375,
+     "p95": 43.541,
+     "p99": 47.084,
+     "max": 74.458
+    }
+   }
+  },
+  {
+   "INFO": {
+    "platform": "host",
+    "model": "lut6warp_w512_tau4_e20_s0",
+    "kind": 1,
+    "gates": 28560,
+    "feature_spec": "gateact-feat-v1",
+    "width": 512,
+    "ngram_mask": 7,
+    "num_hashes": 1,
+    "classes": 16,
+    "ctx_bytes": 24468,
+    "samples": 64,
+    "bench_iters": 2000
+   },
+   "SELFTEST": {
+    "n": 64,
+    "errors": 0,
+    "feature_mismatch": 0,
+    "score_mismatch": 0,
+    "labeled": 64,
+    "correct": 62,
+    "score_hash": "98ab2d85"
+   },
+   "BENCH": {
+    "platform": "host",
+    "iters": 2000,
+    "unit": "us",
+    "features": {
+     "mean": 0.282,
+     "min": 0.125,
+     "p50": 0.291,
+     "p95": 0.375,
+     "p99": 0.417,
+     "max": 0.959
+    },
+    "model": {
+     "mean": 42.276,
+     "min": 40.708,
+     "p50": 41.083,
+     "p95": 46.583,
+     "p99": 57.125,
+     "max": 66.75
+    },
+    "total": {
+     "mean": 42.558,
+     "min": 40.916,
+     "p50": 41.334,
+     "p95": 46.917,
+     "p99": 57.416,
+     "max": 67.0
+    }
+   }
+  }
+ ]
+}
