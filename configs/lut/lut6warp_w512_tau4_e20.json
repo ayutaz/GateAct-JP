@@ -1,0 +1,1 @@
+{"name": "lut6warp_w512_tau4_e20", "features": {"width": 512}, "model": {"hidden": [4096], "output_gates": 4096, "num_classes": 16, "n_inputs": 6, "tau": 4.0, "connections": "unique", "parameterization": "warp"}, "train": {"epochs": 20, "lr": 0.01, "batch_size": 256}}
