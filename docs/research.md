@@ -141,7 +141,7 @@ BENCH を 3 回)。Apple M1、Apple clang、1 文 × 2,000 回、単位 µs。�
    長い学習で、512 bit の上限(91%)を超えられるか。
 4. **ハイブリッド**: n-gram の埋め込みを 2 値化して回路に入れる、または回路を no_action 判定
    (誤作動抑制)だけに使う。
-5. Griffith への報告候補: wheel に `runtime/c` が入っていない、C 生成が `n_inputs=6` を扱えない
+5. Griffith に報告済み(#6、#7): wheel に `runtime/c` が入っていない、C 生成が `n_inputs=6` を扱えない
    (本リポジトリでは LUT5 + LUT3 分割で回避)。
 
 ## 2026-11-21: M2 改善実験 第 1 回(1 seed、10 epoch、`scripts/sweep_m2d.sh`)
