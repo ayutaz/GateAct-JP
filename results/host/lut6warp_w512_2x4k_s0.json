@@ -5,7 +5,7 @@
  "processor": "arm",
  "compile": "cc -std=c99 -O2 -DHOST_BUILD -DMDL_NO_DEFAULT_CTX -DBENCH_ITERS=2000",
  "model_dir": "runs/export/lut6warp_w512_2x4k_s0/model",
- "git_sha": "21a5ec943768c2dfde77cd861242da2ac67eee7f",
+ "git_sha": "1624603a9ef7a19c4e08ba640546f40ff63c3459",
  "iters": 2000,
  "runs": [
   {
@@ -37,28 +37,28 @@
     "iters": 2000,
     "unit": "us",
     "features": {
-     "mean": 0.361,
+     "mean": 0.358,
      "min": 0.125,
      "p50": 0.334,
      "p95": 0.542,
-     "p99": 0.625,
-     "max": 0.917
+     "p99": 0.667,
+     "max": 10.625
     },
     "model": {
-     "mean": 48.588,
-     "min": 41.25,
-     "p50": 46.542,
-     "p95": 58.959,
-     "p99": 62.083,
-     "max": 93.75
+     "mean": 47.678,
+     "min": 40.708,
+     "p50": 43.166,
+     "p95": 65.958,
+     "p99": 74.583,
+     "max": 84.209
     },
     "total": {
-     "mean": 48.949,
-     "min": 41.5,
-     "p50": 46.916,
-     "p95": 59.417,
-     "p99": 62.417,
-     "max": 94.0
+     "mean": 48.036,
+     "min": 40.958,
+     "p50": 43.5,
+     "p95": 66.459,
+     "p99": 75.083,
+     "max": 84.5
     }
    }
   },
@@ -91,82 +91,82 @@
     "iters": 2000,
     "unit": "us",
     "features": {
-     "mean": 0.316,
+     "mean": 0.307,
      "min": 0.125,
      "p50": 0.292,
-     "p95": 0.458,
+     "p95": 0.417,
      "p99": 0.5,
-     "max": 5.083
+     "max": 0.708
     },
     "model": {
-     "mean": 41.706,
-     "min": 40.625,
-     "p50": 41.042,
-     "p95": 43.5,
-     "p99": 48.291,
-     "max": 80.208
-    },
-    "total": {
-     "mean": 42.021,
-     "min": 40.833,
-     "p50": 41.375,
-     "p95": 43.833,
-     "p99": 48.625,
-     "max": 80.458
-    }
-   }
-  },
-  {
-   "INFO": {
-    "platform": "host",
-    "model": "lut6warp_w512_2x4k_s0",
-    "kind": 1,
-    "gates": 28574,
-    "feature_spec": "gateact-feat-v1",
-    "width": 512,
-    "ngram_mask": 7,
-    "num_hashes": 1,
-    "classes": 16,
-    "ctx_bytes": 24480,
-    "samples": 200,
-    "bench_iters": 2000
-   },
-   "SELFTEST": {
-    "n": 200,
-    "errors": 0,
-    "feature_mismatch": 0,
-    "score_mismatch": 0,
-    "labeled": 200,
-    "correct": 184,
-    "score_hash": "a542d7d9"
-   },
-   "BENCH": {
-    "platform": "host",
-    "iters": 2000,
-    "unit": "us",
-    "features": {
-     "mean": 0.309,
-     "min": 0.125,
-     "p50": 0.292,
-     "p95": 0.458,
-     "p99": 0.5,
-     "max": 1.166
-    },
-    "model": {
-     "mean": 41.384,
-     "min": 40.583,
-     "p50": 40.959,
+     "mean": 41.445,
+     "min": 40.708,
+     "p50": 41.0,
      "p95": 43.375,
-     "p99": 47.333,
-     "max": 61.417
+     "p99": 51.416,
+     "max": 56.542
     },
     "total": {
-     "mean": 41.693,
-     "min": 40.834,
-     "p50": 41.291,
+     "mean": 41.752,
+     "min": 40.958,
+     "p50": 41.292,
      "p95": 43.708,
-     "p99": 47.625,
-     "max": 61.792
+     "p99": 51.667,
+     "max": 56.917
+    }
+   }
+  },
+  {
+   "INFO": {
+    "platform": "host",
+    "model": "lut6warp_w512_2x4k_s0",
+    "kind": 1,
+    "gates": 28574,
+    "feature_spec": "gateact-feat-v1",
+    "width": 512,
+    "ngram_mask": 7,
+    "num_hashes": 1,
+    "classes": 16,
+    "ctx_bytes": 24480,
+    "samples": 200,
+    "bench_iters": 2000
+   },
+   "SELFTEST": {
+    "n": 200,
+    "errors": 0,
+    "feature_mismatch": 0,
+    "score_mismatch": 0,
+    "labeled": 200,
+    "correct": 184,
+    "score_hash": "a542d7d9"
+   },
+   "BENCH": {
+    "platform": "host",
+    "iters": 2000,
+    "unit": "us",
+    "features": {
+     "mean": 0.307,
+     "min": 0.125,
+     "p50": 0.292,
+     "p95": 0.458,
+     "p99": 0.5,
+     "max": 0.875
+    },
+    "model": {
+     "mean": 41.371,
+     "min": 40.708,
+     "p50": 41.0,
+     "p95": 43.125,
+     "p99": 47.792,
+     "max": 84.584
+    },
+    "total": {
+     "mean": 41.678,
+     "min": 40.917,
+     "p50": 41.333,
+     "p95": 43.5,
+     "p99": 48.125,
+     "max": 84.834
     }
    }
   }
