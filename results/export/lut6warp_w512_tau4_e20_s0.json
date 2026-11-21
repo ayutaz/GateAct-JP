@@ -1,0 +1,79 @@
+{
+ "checkpoint": "runs/lut6warp_w512_tau4_e20/lut6warp_w512_tau4_e20_s0.pt",
+ "compress": "fast",
+ "dense_flat": "off",
+ "parity": {
+  "n": 4546,
+  "torch_vs_ir_mismatch": 0,
+  "torch_vs_ir_raw_mismatch": 0,
+  "ir_raw_vs_ir_compressed_mismatch": 0,
+  "ir_vs_c_mismatch": 0,
+  "prediction_agreement": 1.0
+ },
+ "sizes": {
+  "gates_raw": 32768,
+  "gates_compressed": 28560,
+  "compress_info": {
+   "level": "fast",
+   "applied": [
+    "sweep"
+   ],
+   "skipped": [],
+   "gates": {
+    "sweep": [
+     32768,
+     28560
+    ]
+   }
+  },
+  "ir_json_bytes_raw": 1009622,
+  "ir_json_bytes_compressed": 870479,
+  "model_c_bytes": 787904,
+  "ctx_bytes": 24468,
+  "host_object_file_bytes": 345504,
+  "host_object_text_bytes": 343251
+ },
+ "model_config": {
+  "input_bits": 512,
+  "hidden": [
+   4096
+  ],
+  "output_gates": 4096,
+  "num_classes": 16,
+  "n_inputs": 6,
+  "tau": 4.0,
+  "connections": "unique",
+  "parameterization": "warp",
+  "residual_init": false,
+  "grad_factor": 1.0
+ },
+ "features": {
+  "width": 512,
+  "ngram_orders": [
+   1,
+   2,
+   3
+  ],
+  "num_hashes": 1,
+  "spec": "gateact-feat-v1",
+  "norm": "gateact-norm-v1"
+ },
+ "labels": [
+  "no_action",
+  "look_up",
+  "look_down",
+  "look_left",
+  "look_right",
+  "look_center",
+  "nod",
+  "shake",
+  "bow",
+  "expr_happy",
+  "expr_surprised",
+  "expr_sad",
+  "led_on",
+  "led_off",
+  "volume_up",
+  "volume_down"
+ ]
+}
